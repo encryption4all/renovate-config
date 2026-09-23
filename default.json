@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "timezone": "Europe/Amsterdam",
+  "schedule": ["before 6am on monday"],
+  "dependencyDashboard": true,
+  "automerge": false,
+  "rangeStrategy": "update-lockfile",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "schedule": ["at any time"]
+  },
+  "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "description": "One grouped PR per repo per week holds every routine update, so a maintainer admin-merges once instead of reviewing each bump.",
+      "matchUpdateTypes": ["minor", "patch", "digest", "pin", "lockFileMaintenance"],
+      "groupName": "weekly non-major"
+    },
+    {
+      "description": "A major can break consumers, so it waits for explicit approval on the Dependency Dashboard instead of riding the weekly group.",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "First-party packages are pinned on purpose as wire-compatibility readers or fixtures; other machinery owns these versions and a Renovate bump would silently undo a compat gate. This must stay the last rule so nothing above can re-enable them.",
+      "matchPackageNames": [
+        "pg-core",
+        "pg-cli",
+        "pg-pkg",
+        "pg-ffi",
+        "pg-wasm",
+        "cryptify",
+        "@e4a/**",
+        "E4A.PostGuard"
+      ],
+      "enabled": false
+    }
+  ]
+}
